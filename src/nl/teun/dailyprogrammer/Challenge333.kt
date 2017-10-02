@@ -22,9 +22,7 @@ fun main(args: Array<String>) {
         packets.add(Packet(Integer.parseInt(messageId), Integer.parseInt(packetId), Integer.parseInt(totalPackets), content))
     }
     val sortedPackets = packets.sortedWith(Packet(0, 0, 0, ""))
-    sortedPackets.forEach {
-        System.out.println("${it.messageId} ${it.packetId} ${it.totalPackets} ${it.content}")
-    }
+    sortedPackets.forEach { System.out.println(it.toString()) }
 }
 
 class Packet(
@@ -32,6 +30,10 @@ class Packet(
         val packetId: Int,
         val totalPackets: Int,
         val content: String) : Comparable<Packet>, Comparator<Packet> {
+
+    override fun toString(): String {
+        return "${this.messageId} ${this.packetId} ${this.totalPackets} ${this.content}"
+    }
 
     override fun compareTo(other: Packet): Int {
         if (other.messageId != this.messageId) {
