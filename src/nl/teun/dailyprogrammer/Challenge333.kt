@@ -3,7 +3,52 @@ package nl.teun.dailyprogrammer
 import java.util.*
 
 fun main(args: Array<String>) {
-    val inputString = """
+
+    val packets = mutableListOf<Packet>()
+    val split = inputString.split('\n').iterator()
+    while (split.hasNext()) {
+        val input = split.next()
+        if (input == "") continue
+
+        val found = input.split(Regex("[ ]{2,}"))
+        if (found.count() != 4) continue
+
+        val iterator = found.iterator()
+
+        val messageId = iterator.next()
+        val packetId = iterator.next()
+        val totalPackets = iterator.next()
+        val content = iterator.next()
+        packets.add(Packet(Integer.parseInt(messageId), Integer.parseInt(packetId), Integer.parseInt(totalPackets), content))
+    }
+    val sortedPackets = packets.sortedWith(Packet(0, 0, 0, ""))
+    sortedPackets.forEach {
+        System.out.println("${it.messageId} ${it.packetId} ${it.totalPackets} ${it.content}")
+    }
+}
+
+class Packet(
+        val messageId: Int,
+        val packetId: Int,
+        val totalPackets: Int,
+        val content: String) : Comparable<Packet>, Comparator<Packet> {
+
+    override fun compareTo(other: Packet): Int {
+        if (other.messageId != this.messageId) {
+            return this.messageId - other.messageId
+        }
+        return this.packetId - other.packetId
+    }
+
+    override fun compare(o1: Packet?, o2: Packet?): Int {
+        if (o1 == null || o2 == null) {
+            throw NullPointerException("")
+        }
+        return o1.compareTo(o2)
+    }
+}
+
+val inputString = """
             7469    1   7   believe. Attack ships on fire off the
             9949    6   10  He's a silent guardian.
             2997    9   19  Force is a pathway to many abilities some
@@ -69,47 +114,3 @@ fun main(args: Array<String>) {
             6450    0   11  Voilà! In view, a humble vaudevillian veteran, cast vicariously as both victim
             9949    5   10  Because he's not a hero.
             """.trimIndent().trimMargin()
-
-    val packets = mutableListOf<Packet>()
-    val split = inputString.split('\n').iterator()
-    while (split.hasNext()) {
-        val input = split.next()
-        if (input == "") continue
-
-        val found = input.split(Regex("[ ]{2,}"))
-        if (found.count() != 4) continue
-
-        val iterator = found.iterator()
-
-        val messageId = iterator.next()
-        val packetId = iterator.next()
-        val totalPackets = iterator.next()
-        val content = iterator.next()
-        packets.add(Packet(Integer.parseInt(messageId), Integer.parseInt(packetId), Integer.parseInt(totalPackets), content))
-    }
-    val sortedPackets = packets.sortedWith(Packet(0, 0, 0, ""))
-    sortedPackets.forEach {
-        System.out.println("${it.messageId} ${it.packetId} ${it.totalPackets} ${it.content}")
-    }
-}
-
-class Packet(
-        val messageId: Int,
-        val packetId: Int,
-        val totalPackets: Int,
-        val content: String) : Comparable<Packet>, Comparator<Packet> {
-
-    override fun compareTo(other: Packet): Int {
-        if (other.messageId != this.messageId) {
-            return this.messageId - other.messageId
-        }
-        return this.packetId - other.packetId
-    }
-
-    override fun compare(o1: Packet?, o2: Packet?): Int {
-        if (o1 == null || o2 == null) {
-            throw NullPointerException("")
-        }
-        return o1.compareTo(o2)
-    }
-}
